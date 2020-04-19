@@ -12,7 +12,8 @@ def tsp(nodes, dist=None):
     出力
         距離と点番号リスト
     """
-    import numpy as np, pandas as pd
+    import numpy as np
+    import pandas as pd
     from more_itertools import iterate, take
     from pulp import LpProblem, LpVariable, LpBinary, lpDot, lpSum, value
 
@@ -58,6 +59,7 @@ def tsp2(pos):
     """
     import numpy as np
     from pulp import LpProblem, LpVariable, LpBinary, lpDot, lpSum, value
+    from ortoolpy import unionfind
 
     pos = np.array(pos)
     N = len(pos)
