@@ -1,5 +1,5 @@
 # see pyproject.toml
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 __author__ = "Saito Tsutomu <tsutomu7@hotmail.co.jp>"
 
 
@@ -15,7 +15,7 @@ def tsp(nodes, dist=None):
     import numpy as np
     import pandas as pd
     from more_itertools import iterate, take
-    from pulp import LpProblem, LpVariable, LpBinary, lpDot, lpSum, value
+    from pulp import PULP_CBC_CMD, LpBinary, LpProblem, LpVariable, lpDot, lpSum, value
 
     n = len(nodes)
     if not dist:
@@ -30,6 +30,7 @@ def tsp(nodes, dist=None):
         columns=["NodeI", "NodeJ", "Dist"],
     )
     m = LpProblem()
+    m.setSolver(PULP_CBC_CMD(msg=False))
     a["VarIJ"] = [LpVariable("x%d" % i, cat=LpBinary) for i in a.index]
     a["VarJI"] = a.sort_values(["NodeJ", "NodeI"]).VarIJ.values
     u = [0] + [LpVariable("y%d" % i, lowBound=0) for i in range(n - 1)]
@@ -58,8 +59,8 @@ def tsp2(pos):
         距離と点番号リスト
     """
     import numpy as np
-    from pulp import LpProblem, LpVariable, LpBinary, lpDot, lpSum, value
     from ortoolpy import unionfind
+    from pulp import LpBinary, LpProblem, LpVariable, lpDot, lpSum, value
 
     pos = np.array(pos)
     N = len(pos)
@@ -118,8 +119,8 @@ def tsp2(pos):
 
 
 def tsp3(point):
-    from math import sqrt
     from itertools import permutations
+    from math import sqrt
 
     n = len(point)
     bst, mn = None, 1e100

@@ -19,6 +19,8 @@
     >>>
     (4, [0, 1, 3, 2])
 
+Note: When large size, `ortoolpy.ortools_vrp` may be efficient.
+
 See also https://pypi.org/project/ortoolpy/
 
 Requirements
