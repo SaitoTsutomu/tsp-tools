@@ -2,17 +2,17 @@
 authors = ["SaitoTsutomu <tsutomu7@hotmail.co.jp>"]
 classifiers = [
   "Development Status :: 1 - Planning",
-  "License :: OSI Approved :: Python Software Foundation License",
+  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
   "Topic :: Software Development",
   "Topic :: Scientific/Engineering",
 ]
 description = "`tsp` is a package for Traveling Salesman Problem for Python."
 homepage = "https://github.com/SaitoTsutomu/tsp"
-license = "PSFL"
+license = "MIT"
 name = "tsp"
 readme = "README.rst"
-version = "0.0.8"
+version = "0.0.9"
 
 [tool.poetry.dependencies]
 PuLP = "^2.3.1"
