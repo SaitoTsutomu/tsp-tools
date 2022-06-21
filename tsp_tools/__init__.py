@@ -1,8 +1,3 @@
-# see pyproject.toml
-__version__ = "0.0.8"
-__author__ = "Saito Tsutomu <tsutomu7@hotmail.co.jp>"
-
-
 def tsp(nodes, dist=None):
     """
     巡回セールスマン問題
@@ -127,8 +122,7 @@ def tsp3(point):
     for d in permutations(range(1, n)):
         e = [point[i] for i in [0] + list(d) + [0]]
         s = sum(
-            sqrt((e[i][0] - e[i + 1][0]) ** 2 + (e[i][1] - e[i + 1][1]) ** 2)
-            for i in range(n)
+            sqrt((e[i][0] - e[i + 1][0]) ** 2 + (e[i][1] - e[i + 1][1]) ** 2) for i in range(n)
         )
         if s < mn:
             mn = s

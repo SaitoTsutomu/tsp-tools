@@ -1,9 +1,9 @@
-`tsp` is a package for Traveling Salesman Problem for Python.
+`tsp-tools` is a package for Traveling Salesman Problem for Python.
 
 ::
 
-    import tsp
-    t = tsp.tsp([(0,0), (0,1), (1,0), (1,1)])
+    import tsp_tools
+    t = tsp_tools.tsp([(0,0), (0,1), (1,0), (1,1)])
     print(t)  # distance, node index list
     >>>
     (4, [0, 1, 3, 2])
@@ -15,7 +15,7 @@
     r = range(len(mat))
     # Dictionary of distance
     dist = {(i, j): mat[i][j] for i in r for j in r}
-    print(tsp.tsp(r, dist))
+    print(tsp_tools.tsp(r, dist))
     >>>
     (4, [0, 1, 3, 2])
 
@@ -26,7 +26,6 @@ See also https://pypi.org/project/ortoolpy/
 Requirements
 ------------
 * Python 3
-* PuLP
 * more-itertools
 
 Features
@@ -37,7 +36,7 @@ Setup
 -----
 ::
 
-   $ pip install tsp
+   $ pip install tsp-tools
 
 History
 -------
