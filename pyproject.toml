@@ -2,28 +2,29 @@
 authors = ["SaitoTsutomu <tsutomu7@hotmail.co.jp>"]
 classifiers = [
   "Development Status :: 1 - Planning",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Apache Software License",
   "Programming Language :: Python",
   "Topic :: Software Development",
   "Topic :: Scientific/Engineering",
 ]
 description = "`tsp-tools` is a package for Traveling Salesman Problem for Python."
 homepage = "https://github.com/SaitoTsutomu/tsp-tools"
-license = "MIT"
+license = "Apache-2.0"
 name = "tsp-tools"
 readme = "README.rst"
-version = "0.0.9"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
+PuLP = "^2.6"
 more-itertools = "^8.13"
 pandas = "^1.4"
 python = "^3.10"
 
 [tool.poetry.dev-dependencies]
-black = "^22.3"
+black = "^22.6"
 flake8 = "^4.0"
 isort = "^5.10"
-mypy = "^0.961"
+mypy = "^0.971"
 pytest = "^7.1"
 
 [build-system]
