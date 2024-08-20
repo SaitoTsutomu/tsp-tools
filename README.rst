@@ -6,7 +6,7 @@
     t = tsp_tools.tsp([(0,0), (0,1), (1,0), (1,1)])
     print(t)  # distance, node index list
     >>>
-    (4, [0, 2, 3, 1])
+    (4.0, [0, 2, 3, 1])
 
     mat = [[  0,   1, 1, 1.5],
            [  1,   0, 1.5, 1],
@@ -17,7 +17,7 @@
     dist = {(i, j): mat[i][j] for i in r for j in r}
     print(tsp_tools.tsp(r, dist))
     >>>
-    (4, [0, 2, 3, 1])
+    (4.0, [0, 2, 3, 1])
 
 Note: When large size, `ortoolpy.ortools_vrp` may be efficient.
 

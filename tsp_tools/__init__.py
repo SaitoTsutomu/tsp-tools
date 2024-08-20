@@ -14,11 +14,7 @@ def tsp(nodes, dist=None):
 
     n = len(nodes)
     if not dist:
-        dist = {
-            (i, j): np.linalg.norm(np.subtract(nodes[i], nodes[j]))
-            for i in range(n)
-            for j in range(i + 1, n)
-        }
+        dist = {(i, j): np.linalg.norm(np.subtract(nodes[i], nodes[j])) for i in range(n) for j in range(i + 1, n)}
         dist.update({(j, i): d for (i, j), d in dist.items()})
     a = pd.DataFrame(
         [(i, j, dist[i, j]) for i in range(n) for j in range(n) if i != j],
@@ -41,7 +37,7 @@ def tsp(nodes, dist=None):
         m += u[i] <= (n - 1) - (1 - vi0) - (n - 3) * v0i  # 持ち上げ上界制約
     m.solve()
     a["ValIJ"] = a.VarIJ.apply(value)
-    dc = dict(a[a.ValIJ > 0.5][["NodeI", "NodeJ"]].values)
+    dc = dict(a[a.ValIJ > 0.5][["NodeI", "NodeJ"]].values.tolist())
     return value(m.objective), list(take(n, iterate(lambda k: dc[k], 0)))
 
 
@@ -121,9 +117,7 @@ def tsp3(point):
     bst, mn = None, 1e100
     for d in permutations(range(1, n)):
         e = [point[i] for i in [0] + list(d) + [0]]
-        s = sum(
-            sqrt((e[i][0] - e[i + 1][0]) ** 2 + (e[i][1] - e[i + 1][1]) ** 2) for i in range(n)
-        )
+        s = sum(sqrt((e[i][0] - e[i + 1][0]) ** 2 + (e[i][1] - e[i + 1][1]) ** 2) for i in range(n))
         if s < mn:
             mn = s
             bst = [0] + list(d)
