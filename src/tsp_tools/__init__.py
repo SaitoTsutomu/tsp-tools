@@ -41,7 +41,7 @@ def tsp(nodes, dist=None):
     return value(m.objective), list(take(n, iterate(lambda k: dc[k], 0)))
 
 
-def tsp2(pos):
+def tsp2(pos):  # noqa: C901
     """
     巡回セールスマン問題
     入力
@@ -54,28 +54,28 @@ def tsp2(pos):
     from pulp import LpBinary, LpProblem, LpVariable, lpDot, lpSum, value
 
     pos = np.array(pos)
-    N = len(pos)
+    num = len(pos)
     m = LpProblem()
     v = {}
-    for i in range(N):
-        for j in range(i + 1, N):
-            v[i, j] = v[j, i] = LpVariable("v%d%d" % (i, j), cat=LpBinary)
+    for i in range(num):
+        for j in range(i + 1, num):
+            v[i, j] = v[j, i] = LpVariable(f"v_{i}_{j}", cat=LpBinary)
     m += lpDot(
         [np.linalg.norm(pos[i] - pos[j]) for i, j in v if i < j],
         [x for (i, j), x in v.items() if i < j],
     )
-    for i in range(N):
-        m += lpSum(v[i, j] for j in range(N) if i != j) == 2
-    for i in range(N):
-        for j in range(i + 1, N):
-            for k in range(j + 1, N):
+    for i in range(num):
+        m += lpSum(v[i, j] for j in range(num) if i != j) == 2
+    for i in range(num):
+        for j in range(i + 1, num):
+            for k in range(j + 1, num):
                 m += v[i, j] + v[j, k] + v[k, i] <= 2
     st = set()
     while True:
         m.solve()
-        u = unionfind(N)
-        for i in range(N):
-            for j in range(i + 1, N):
+        u = unionfind(num)
+        for i in range(num):
+            for j in range(i + 1, num):
                 if value(v[i, j]) > 0:
                     u.unite(i, j)
         gg = u.groups()
@@ -88,16 +88,16 @@ def tsp2(pos):
                 m += (
                     lpSum(
                         v[i, j]
-                        for i in range(N)
-                        for j in range(i + 1, N)
+                        for i in range(num)
+                        for j in range(i + 1, num)
                         if (i in g and j not in g) or (i not in g and j in g)
                     )
                     >= 1
                 )
                 break
-    cn = [0] * N
-    for i in range(N):
-        for j in range(i + 1, N):
+    cn = [0] * num
+    for i in range(num):
+        for j in range(i + 1, num):
             if value(v[i, j]) > 0:
                 if i or cn[i] == 0:
                     cn[i] += j
@@ -116,9 +116,9 @@ def tsp3(point):
     n = len(point)
     bst, mn = None, 1e100
     for d in permutations(range(1, n)):
-        e = [point[i] for i in [0] + list(d) + [0]]
+        e = [point[i] for i in [0, *list(d), 0]]
         s = sum(sqrt((e[i][0] - e[i + 1][0]) ** 2 + (e[i][1] - e[i + 1][1]) ** 2) for i in range(n))
         if s < mn:
             mn = s
-            bst = [0] + list(d)
+            bst = [0, *list(d)]
     return mn, bst
