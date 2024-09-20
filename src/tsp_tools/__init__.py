@@ -1,3 +1,12 @@
+from itertools import permutations
+from math import sqrt
+
+import numpy as np
+import pandas as pd
+from more_itertools import iterate, take
+from pulp import PULP_CBC_CMD, LpBinary, LpProblem, LpVariable, lpDot, lpSum, value
+
+
 def tsp(nodes, dist=None):
     """
     巡回セールスマン問題
@@ -7,41 +16,36 @@ def tsp(nodes, dist=None):
     出力
         距離と点番号リスト
     """
-    import numpy as np
-    import pandas as pd
-    from more_itertools import iterate, take
-    from pulp import PULP_CBC_CMD, LpBinary, LpProblem, LpVariable, lpDot, lpSum, value
-
     n = len(nodes)
     if not dist:
         dist = {(i, j): np.linalg.norm(np.subtract(nodes[i], nodes[j])) for i in range(n) for j in range(i + 1, n)}
         dist.update({(j, i): d for (i, j), d in dist.items()})
-    a = pd.DataFrame(
+    df = pd.DataFrame(  # noqa: PD901
         [(i, j, dist[i, j]) for i in range(n) for j in range(n) if i != j],
         columns=["NodeI", "NodeJ", "Dist"],
     )
     m = LpProblem()
     m.setSolver(PULP_CBC_CMD(msg=False))
-    a["VarIJ"] = [LpVariable("x%d" % i, cat=LpBinary) for i in a.index]
-    a["VarJI"] = a.sort_values(["NodeJ", "NodeI"]).VarIJ.values
-    u = [0] + [LpVariable("y%d" % i, lowBound=0) for i in range(n - 1)]
-    m += lpDot(a.Dist, a.VarIJ)
-    for _, v in a.groupby("NodeI"):
+    df["VarIJ"] = [LpVariable(f"x{i}", cat=LpBinary) for i in df.index]
+    df["VarJI"] = df.sort_values(["NodeJ", "NodeI"]).VarIJ.values
+    u = [0] + [LpVariable(f"y{i}", lowBound=0) for i in range(n - 1)]
+    m += lpDot(df.Dist, df.VarIJ)
+    for _, v in df.groupby("NodeI"):
         m += lpSum(v.VarIJ) == 1  # 出次数制約
         m += lpSum(v.VarJI) == 1  # 入次数制約
-    for _, (i, j, _, vij, vji) in a.query("NodeI!=0 & NodeJ!=0").iterrows():
+    for _, (i, j, _, vij, vji) in df.query("NodeI!=0 & NodeJ!=0").iterrows():
         m += u[i] + 1 - (n - 1) * (1 - vij) + (n - 3) * vji <= u[j]  # 持ち上げポテンシャル制約(MTZ)
-    for _, (_, j, _, v0j, vj0) in a.query("NodeI==0").iterrows():
+    for _, (_, j, _, v0j, vj0) in df.query("NodeI==0").iterrows():
         m += 1 + (1 - v0j) + (n - 3) * vj0 <= u[j]  # 持ち上げ下界制約
-    for _, (i, _, _, vi0, v0i) in a.query("NodeJ==0").iterrows():
+    for _, (i, _, _, vi0, v0i) in df.query("NodeJ==0").iterrows():
         m += u[i] <= (n - 1) - (1 - vi0) - (n - 3) * v0i  # 持ち上げ上界制約
     m.solve()
-    a["ValIJ"] = a.VarIJ.apply(value)
-    dc = dict(a[a.ValIJ > 0.5][["NodeI", "NodeJ"]].values.tolist())
+    df["ValIJ"] = df.VarIJ.apply(value)
+    dc = dict(df[df.ValIJ > 0.5][["NodeI", "NodeJ"]].values.tolist())
     return value(m.objective), list(take(n, iterate(lambda k: dc[k], 0)))
 
 
-def tsp2(pos):  # noqa: C901
+def tsp2(pos):  # noqa: C901 PLR0912
     """
     巡回セールスマン問題
     入力
@@ -49,9 +53,7 @@ def tsp2(pos):  # noqa: C901
     出力
         距離と点番号リスト
     """
-    import numpy as np
-    from ortoolpy import unionfind
-    from pulp import LpBinary, LpProblem, LpVariable, lpDot, lpSum, value
+    from ortoolpy import unionfind  # noqa: PLC0415
 
     pos = np.array(pos)
     num = len(pos)
@@ -110,9 +112,6 @@ def tsp2(pos):  # noqa: C901
 
 
 def tsp3(point):
-    from itertools import permutations
-    from math import sqrt
-
     n = len(point)
     bst, mn = None, 1e100
     for d in permutations(range(1, n)):
