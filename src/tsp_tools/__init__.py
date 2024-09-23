@@ -1,3 +1,4 @@
+from importlib.metadata import metadata
 from itertools import permutations
 from math import sqrt
 
@@ -5,6 +6,10 @@ import numpy as np
 import pandas as pd
 from more_itertools import iterate, take
 from pulp import PULP_CBC_CMD, LpBinary, LpProblem, LpVariable, lpDot, lpSum, value
+
+_package_metadata = metadata(__package__)
+__version__ = _package_metadata["Version"]
+__author__ = _package_metadata.get("Author-email", "")
 
 
 def tsp(nodes, dist=None):
