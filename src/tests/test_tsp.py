@@ -1,3 +1,4 @@
+# flake8: noqa: S101
 from tsp_tools import tsp
 
 
